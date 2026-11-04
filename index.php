@@ -1,20 +1,34 @@
 <?php
 
-$conn = mysqli_connect('localhost','root','','contact_db') or die('connection failed');
+// Database settings come from the environment when set, so real credentials stay out of the code.
+$conn = mysqli_connect(
+   getenv('DB_HOST') ?: 'localhost',
+   getenv('DB_USER') ?: 'root',
+   getenv('DB_PASS') ?: '',
+   getenv('DB_NAME') ?: 'contact_db'
+) or die('connection failed');
 
 if(isset($_POST['submit'])){
 
-   $name = mysqli_real_escape_string($conn, $_POST['name']);
-   $email = mysqli_real_escape_string($conn, $_POST['email']);
-   $number = $_POST['number'];
-   $date = $_POST['date'];
+   $name = trim($_POST['name'] ?? '');
+   $email = trim($_POST['email'] ?? '');
+   $number = preg_replace('/[^0-9+]/', '', $_POST['number'] ?? '');
+   $date = $_POST['date'] ?? '';
+   $when = DateTime::createFromFormat('Y-m-d\TH:i', $date);
 
-   $insert = mysqli_query($conn, "INSERT INTO `contact_form`(name, email, number, date) VALUES('$name','$email','$number','$date')") or die('query failed');
-
-   if($insert){
-      $message[] = 'appointment made successfully!';
+   if($name === '' || strlen($name) > 100 || strlen($email) > 100 || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($number) < 6 || strlen($number) > 10 || !$when){
+      $message[] = 'please check your name, email, number and date';
    }else{
-      $message[] = 'appointment failed';
+      // A prepared statement: every value is sent as data, never as part of the SQL.
+      $insert = mysqli_prepare($conn, "INSERT INTO `contact_form`(name, email, number, date) VALUES(?, ?, ?, ?)");
+      $sqlDate = $when->format('Y-m-d H:i:s');
+      mysqli_stmt_bind_param($insert, 'ssss', $name, $email, $number, $sqlDate);
+
+      if(mysqli_stmt_execute($insert)){
+         $message[] = 'appointment made successfully!';
+      }else{
+         $message[] = 'appointment failed';
+      }
    }
 
 }
@@ -27,7 +41,7 @@ if(isset($_POST['submit'])){
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Complete Responsive Dentist Website Design Tutorial</title>
+   <title>Dental Clinic · Book an appointment</title>
 
    <!-- font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -262,11 +276,11 @@ if(isset($_POST['submit'])){
 
    <h1 class="heading">make appointment</h1>
 
-   <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+   <form action="" method="post">
       <?php 
          if(isset($message)){
             foreach($message as $message){
-               echo '<p class="message">'.$message.'</p>';
+               echo '<p class="message">'.htmlspecialchars($message).'</p>';
             }
          }
       ?>

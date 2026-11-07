@@ -16,7 +16,12 @@
    box-sizing: border-box;
    outline: none; border:none;
    text-decoration: none !important;
-   text-transform: capitalize;
+}
+
+/* The reset above removes outlines; keep a clear focus ring for keyboard users. */
+:focus-visible{
+   outline: .3rem solid var(--blue);
+   outline-offset: .3rem;
 }
 
 *::-webkit-scrollbar{
@@ -98,6 +103,8 @@ section{
 }
 
 #menu-btn{
+   background: none;
+   padding: .5rem;
    font-size: 2.5rem;
    color:var(--black);
    cursor: pointer;
@@ -115,8 +122,10 @@ section{
    padding:2rem;
 }
 
-.home .content h3{
+.home .content h1{
    font-size: 6rem;
+   font-weight: 600;
+   line-height: 1.1;
    text-transform: uppercase;
    color:var(--black);
 }
@@ -137,7 +146,7 @@ section{
    color:var(--blue);
 }
 
-.about .content h3{
+.about .content h2{
    font-size: 3rem;
    color:var(--black);
    margin-top: 1rem;
@@ -216,59 +225,40 @@ section{
    line-height: 2;
 }
 
-.reviews{
+.expect{
    background-color: var(--light-bg);
 }
 
-.reviews .box-container{
+.expect .box-container{
    display: grid;
    grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
    gap:2rem;
 }
 
-.reviews .box-container .box{
+.expect .box-container .box{
    background-color: var(--white);
-   text-align: center;
    border-radius: .5rem;
    box-shadow: var(--box-shadow);
-   padding:2rem;
+   padding:3rem;
 }
 
-.reviews .box-container .box img{
-   height: 10rem;
-   width: 10rem;
-   border-radius: 50%;
-}
-
-.reviews .box-container .box p{
-   padding:2rem 0;
-   line-height: 2;
-   font-size: 1.5rem;
-   color:var(--light-color);
-   margin-bottom: 0;
-}
-
-.reviews .box-container .box .stars{
-   padding:.5rem 1.5rem;
-   border-radius: .5rem;
-   background-color: var(--light-bg);
-   margin-bottom: 2rem;
-   display: inline-block;
-}
-
-.reviews .box-container .box .stars i{
-   font-size: 1.5rem;
+.expect .box-container .box i{
+   font-size: 3rem;
    color:var(--blue);
 }
 
-.reviews .box-container .box h3{
+.expect .box-container .box h3{
+   margin-top: 1.5rem;
    font-size: 2rem;
    color:var(--black);
 }
 
-.reviews .box-container .box span{
-   color:var(--light-color);
+.expect .box-container .box p{
+   padding-top: 1rem;
+   line-height: 2;
    font-size: 1.5rem;
+   color:var(--light-color);
+   margin-bottom: 0;
 }
 
 .contact form{
@@ -301,7 +291,8 @@ section{
    text-transform: none;
 }
 
-.contact form span{
+.contact form label{
+   display: block;
    font-size: 1.7rem;
    color:var(--black);
 }
@@ -347,11 +338,11 @@ section{
    border-top: var(--border);
    padding-top: 2rem;
    margin-top: 2rem;
-   font-size: 2rem;
+   font-size: 1.6rem;
    color:var(--light-color);
 }
 
-.footer .credit span{
+.footer .credit a{
    color:var(--blue);
 }
 
@@ -432,7 +423,7 @@ section{
       font-size: 50%;
    }
 
-   .home .content h3{
+   .home .content h1{
       font-size: 4rem;
    }
 
